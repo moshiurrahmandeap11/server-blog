@@ -131,6 +131,34 @@ router.post("/login", async(req, res) => {
     }
 })
 
+// forget-password
+router.post("/forget-password", async(req, res) => {
+    try {
+        const {email, otp} = req.body;
+
+        if(!email) {
+            return res.status(400).json({
+                success: false,
+                message: "email required",
+            })
+        }
+
+        const checkUserExists = await pool.query("select * from users where email = $1", [email])
+        if(checkUserExists.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `no data found with this email ${email}`
+            })
+        }
+    } catch (e) {
+        console.error("forget password failed :", e);
+        res.status(500).json({
+            success: false,
+            message: "server error"
+        })
+    }
+})
+
 
 // get solo user from postgresdb by ID
 router.get("/:id", async(req, res) => {
