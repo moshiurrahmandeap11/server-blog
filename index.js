@@ -6,6 +6,8 @@ dotenv.config();
 const port = process.env.PORT;
 
 // import routes
+import blogs from "./routes/blogsRoute/blogs.js";
+import forgetPassword from "./routes/userRoutes/forget-password.js";
 import users from "./routes/userRoutes/users.js";
 
 const app = express();
@@ -19,6 +21,8 @@ connectDB();
 
 // api endpoints
 app.use("/api/users", users);
+app.use("/api/forgot-password", forgetPassword);
+app.use("/api/blogs", blogs);
 
 
 

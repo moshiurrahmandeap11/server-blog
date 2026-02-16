@@ -1,130 +1,154 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
 class EmailService {
     constructor() {
         this.transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            port: process.env.SMTP_PORT || 587,
-            secure: false, // true for 465, false for other ports
+            host: process.env.SMTP_HOST,
+            port: process.env.SMTP_PORT,
+            secure: false,
             auth: {
-                user: process.env.SMTP_USER, // your email
-                pass: process.env.SMTP_PASS, // your app password
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS,
             },
         });
-    }
+    };
 
-    // Generate 4-digit OTP
-    generateOTP() {
-        return Math.floor(1000 + Math.random() * 9000).toString();
-    }
-
-    // Send OTP Email
-    async sendOTPEmail(email, name, otp) {
+    // send password reset link with email
+    async sendResetLinkEmail(email,name, resetLink) {
         const mailOptions = {
             from: `"Modern Blog" <${process.env.SMTP_USER}>`,
             to: email,
-            subject: '🔐 Password Reset OTP - Modern Blog',
+            subject: "Reset Your Password - Modern Blog",
             html: `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                </head>
-                <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
-                    <div style="max-width: 600px; margin: 20px auto; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
-                        
-                        <!-- Header with gradient -->
-                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
-                            <h1 style="color: white; margin: 0; font-size: 28px;">Modern Blog</h1>
-                            <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0;">Password Reset Request</p>
-                        </div>
-                        
-                        <!-- Main Content -->
-                        <div style="padding: 40px 30px;">
-                            <h2 style="color: #333; margin-top: 0;">Hello ${name || 'User'}! 👋</h2>
-                            
-                            <p style="color: #666; line-height: 1.6; font-size: 16px;">
-                                We received a request to reset your password for your Modern Blog account. 
-                                Use the following OTP (One-Time Password) to proceed with the password reset:
-                            </p>
-                            
-                            <!-- OTP Box -->
-                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; text-align: center; margin: 30px 0;">
-                                <div style="background: white; padding: 20px; border-radius: 8px; font-size: 48px; letter-spacing: 10px; font-weight: bold; color: #333;">
-                                    ${otp}
-                                </div>
-                            </div>
-                            
-                            <p style="color: #666; line-height: 1.6; font-size: 16px;">
-                                <strong>⏰ This OTP will expire in 5 minutes.</strong>
-                            </p>
-                            
-                            <div style="background: #f8f9fa; border-left: 4px solid #667eea; padding: 15px; margin: 30px 0;">
-                                <p style="color: #666; margin: 0; font-size: 14px;">
-                                    <strong>⚠️ Security Tip:</strong> If you didn't request this password reset, 
-                                    please ignore this email or contact support if you're concerned about your account's security.
-                                </p>
-                            </div>
-                            
-                            <p style="color: #999; font-size: 14px; text-align: center; margin-top: 40px;">
-                                This is an automated message, please do not reply to this email.<br>
-                                &copy; ${new Date().getFullYear()} Modern Blog. All rights reserved.
-                            </p>
-                        </div>
-                    </div>
-                </body>
-                </html>
+            <!DOCTYPE html>
+            <html>
+            <head>
+            <meta charset="uts-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+            </style>
+            </head>
+            <body style="font-family: 'Inter', Arial, sans-serif; margin: 0; padding: 0; background-color: #f3f4f6;">
+            <!-- Main Container -->
+            <div style="max-width: 600px; margin: 40px auto; background: white; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
+            <!-- Hero Section with Gradient -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 48px 40px; text-align: center;">
+            <div style="background: rgba(255,255,255,0.1); width: 80px; height: 80px; border-radius: 50%; margin 0 auto 24px; display: flex; align-itmes: center; justify-content: center;">
+            <span style="font-size: 40px;">🔐</span>
+            </div>
+            <h1 style="color: white; margin: 0; font-size 32px; font-weight: 700; letter-spacing: -0.5px;">Modern Blog</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 12px 0 0; font-size 16px;">Password Reset Request</p>
+            </div>
+
+            <!-- Content Section -->
+            <div style="padding: 48px 40px; background: white;">
+            <h2 style="color: #1f2937; margin-top: 0; font-size: 2px; font-weight: 600;">${name || "there"}</h2>
+            <p style="color: #4b5563; line-height: 1.8; font-size: 16px; margin: 24px 0;">
+            We Received a request to reset the password for your Modern Blog account. No Worries! Click the button below to create a new password:</p>
+            <!-- Reset Button -->
+            <div style="text-aligh: center; margin: 40px 0;">
+            <a href="${resetLink}" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 40px; border-radius: 12pxp; text-decoration: none; font-weight: 600; font-size: 18px; display: inline-block; box-shadow: 0 10px 20px -5px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">Reset Password</a>
+            </div>
+
+            <!-- alternative link -->
+            <p style="color: #6b7280; font-size: 14px; text-aligh: center; margin: 24px 0;">
+            Or Copy this link:<br />
+            <span style="color: #667eea; word-break: break-all;">${resetLink}</span>
+            </p>
+
+            <!-- warning box -->
+            <div style="background: #fef2f2; border-left: 4pxp solid #ef4444; padding: 20px; margin: 32px 0; border-radius: 8px;">
+            <p style="color: #991b1b; margin: 0; font-size: 14px; font-weight: 500;">This link will be expire in <strong> 1 hour </strong></p>
+            <p style="color: #b91c1c; margin: 8px 0 0; font-size: 14px;">
+            If you didn't request this password reset, please ignore this email or <a href="mailto:moshiurrahmandeap@gmail.com" style="color: #dc2626; text-decoration: underline;">Contact support</a> if you're concerned about your account's security.
+            </p>
+            </div>
+            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 32px 0;">
+
+            <!-- footer -->
+            <div style="text-align: center;">
+            <p style="color: #9ca3af; font-size: 14px; margin: 8px 0;">
+            This is an automated message, please do not reply to this email
+            </p>
+            <p style="color: #9ca3af; font-size: 13px; margin: 8px 0;">
+            &copy; ${new Date().getFullYear()} Modern Blog. All rights reserved.
+            </p>
+            <div style="margin-top: 24px;">
+            <a href="#" style="color: #9ca3af; text-decoration: none; margin: 0 10px; font-size: 13px;">Privacy Policy</a>
+            <span style="color: #d1d5db;">•</span>
+            <a href="#" style="color: #9ca3af; text-decoration: none; margin: 0 10px; font-size: 13px;">Terms of Serviice</a>
+            <span style="color: #d1d5db;">•</span>
+            <a href="#" style="color: #9ca3af; text-decoration: none; margin: 0 10px; font-size: 13px;">Contact Support</a>
+            </div>
+            </div>
+            </div>
+
+            <!-- decorative footer -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 8px;"></div>
+
+            </div>
+            </body>
+            </html>
             `,
-            // Plain text version for email clients that don't support HTML
+
+            // plain text version
             text: `
-                Hello ${name || 'User'}!
-                
-                We received a request to reset your password for your Modern Blog account.
-                
-                Your OTP (One-Time Password) is: ${otp}
-                
-                This OTP will expire in 5 minutes.
-                
-                If you didn't request this password reset, please ignore this email.
-                
-                This is an automated message, please do not reply to this email.
-                © ${new Date().getFullYear()} Modern Blog.
-            `,
+            Hello ${name || 'there'}!
+            We received a request to reset your Modern Blog account password.
+            Click the link below to reset your password: ${resetLink}
+
+            This Link will expire in 1 hour.
+
+            If you didn't request this, please ignore this email.
+
+            This is an automated message, please do not reply.
+            © ${new Date().getFullYear()} Modern Blog
+            `
         };
 
         try {
             const info = await this.transporter.sendMail(mailOptions);
-            console.log('Email sent successfully:', info.messageId);
-            return { success: true, messageId: info.messageId };
-        } catch (error) {
-            console.error('Email sending failed:', error);
-            throw error;
+            console.log("Reset link email sent: ", info.messageId);
+            return {success: true, messageId: info.messageId};
+        } catch (err) {
+            console.log("Email sending failed: ", err);
+            throw err;
         }
     }
 
-    // Send Password Change Confirmation Email
+
+    // send password change confirmation
     async sendPasswordChangeConfirmation(email, name) {
         const mailOptions = {
             from: `"Modern Blog" <${process.env.SMTP_USER}>`,
             to: email,
-            subject: '✅ Password Changed Successfully - Modern Blog',
+            subject: "Password Changed Successfully - Modern Blog",
             html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #28a745;">Password Changed Successfully!</h2>
-                    <p>Hello ${name || 'User'},</p>
-                    <p>Your Modern Blog account password has been successfully changed.</p>
-                    <p>If you didn't make this change, please contact our support team immediately.</p>
-                    <hr>
-                    <p style="color: #666; font-size: 12px;">Modern Blog - Your Daily Read</p>
-                </div>
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #10b9981 0%, #059669 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
+            <h1 style="color: white; margin: 0;">Success!</h1>
+            </div>
+            <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
+            <h2 style="color: #1f2937;">Password Changed Successfully</h2>
+            <p style="color: #4b5563;">Hello ${name || 'User'},</p>
+            <p style="color: #4b5563;">Your Modern Blog account password has been successfully changed.</p>
+            <div style="background: #e6f7e6; padding: 15px; border-radius: 8px; margin:20px 0;">
+            <p style="color: #059669; margin: 0;">
+            If you didn't make this change, please contact our support team immediately.
+            </p>
+            </div>
+            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+            <p style="color: #6b7280; font-size: 12px; text-aligh: center;">Modern Blog - Your Daily Read</p>
+            </div>
+            </div>
             `,
         };
 
         try {
             await this.transporter.sendMail(mailOptions);
-        } catch (error) {
-            console.error('Confirmation email failed:', error);
+        } catch (err) {
+            console.log("Confirmation email failed: ", err);
         }
     }
 }
