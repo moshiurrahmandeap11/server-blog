@@ -1,7 +1,10 @@
 import dotenv from "dotenv";
-import pkg from "pg";
 dotenv.config();
 
+
+
+
+import pkg from "pg";
 const {Pool} = pkg;
 
 const pool = new Pool({
@@ -10,6 +13,9 @@ const pool = new Pool({
     port: process.env.DB_PORT,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
+        ssl: {
+        rejectUnauthorized: false,
+    },
 });
 
 // connect with postgres db
